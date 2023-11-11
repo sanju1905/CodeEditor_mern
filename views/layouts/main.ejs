@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title != 'undefined' ? title: 'FOODIE' %></title>
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+
+</head>
+
+<body class="container-fluid">
+  <div class="container-xxl px-md-5 bg-white shadow-lg">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+      <h3 class="fw-bold"><img src="img/wrong-decision.gif" style="height: 70px; width: 70px;" alt="quiz" class="mb-2" />Quiznet</h3>
+      <!-- <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none"><img src="" width="229" margin="68" alt="cooking bog">FOODIE</a> -->
+
+      <ul class="nav  col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/" class="nav-link link-secondary px-2 category__link1">Home</a></li>
+        <li><a href="/quiz" class="nav-link link-secondary px-2 category__link1">Quiz</a></li>
+        <li><a href="/about" class="nav-link link-secondary px-2 category__link1">About</a></li>
+        <li><a href="/login" class="nav-link link-secondary px-2 category__link1">Admin-Login</a></li>
+        <!-- <li><a href="#support" class="nav-link link-secondary px-2 category__link1">Support</a></li> -->
+
+      </ul>
+      <!-- <div class="col-md-4 text-end">
+       
+          <input type="search" class="form-control" name="searchTerm" placeholder="Searching.." aria-label="Search" />
+       
+      </div> -->
+    </header>
+    <main>
+      <%- body -%>
+
+     
+      
+    </main>
+
+
+
+
+
+    <footer class="py-3 my-4">
+      <!-- <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+              <li class="nav-item"><a href="#" class="nav-link px-2 text-muted category__link1">Home</a></li>
+              <li class="nav-item"><a href="#" class="nav-link px-2 text-muted category__link1">About</a></li>
+              <li class="nav-item"><a href="/submit-recipe" class="nav-link px-2 text-muted category__link1">Submit</a></li>
+              <li class="nav-item"><a href="#" class="nav-link px-2 text-muted category__link1">Contact</a></li>
+            </ul> -->
+      <p class="text-center text-muted">© build by Sanjay-Kandula</p>
+    </footer>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="/js/script.js"></script>
+</body>
+
+</html>
