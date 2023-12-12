@@ -1,70 +1,38 @@
 <div class="px-4 my-2 text-center">
-  <h1 class="display-5 fw-bold"> Submit Your Questions</h1>
+  <h1 class="display-5 fw-bold">Submit Your Questions</h1>
   <div class="col-lg-6 mx-auto">
-    <p class="lead">Share your simple Questions with thousands our developers across the World ,Fill our Form</p>
+    <p class="lead">Share your simple Questions with thousands of our developers across the World, Fill our Form</p>
   </div>
 </div>
 
-
 <div class="row justify-content-center">
   <div class="col-8">
-<form action="/submit-ques" enctype="multipart/form-data" method="post">
-    <div class="col-12">
-        <label for="file" class="form-label">Upload Questions (Excel file):</label>
-        <input type="file" class="form-control" name="file" id="file" accept=".xlsx, .xls" />
+    <form action="/submit-ques" enctype="multipart/form-data" method="post">
+
+      <div class="col-12">
+        <label for="name" class="form-label">Name:</label>
+        <input type="text" class="form-control" name="name" id="name" required />
       </div>
+      <br/>
+      <div class="col-12 ">
+        <label for="question" class="form-label">Question:</label>
+        <input type="text" class="form-control" name="question" id="question" required />
+      </div>
+      <br/>
+      <div class="col-12">
+        <label for="file" class="form-label">Upload Code (Code file):</label>
+        <input type="file" class="form-control" name="code" id="file" />
+      </div>
+      <br/>  
+      <div class="col-12">
+        <label for="file" class="form-label">Upload Video (MP4):</label>
+        <input type="file" class="form-control" name="video" id="file" accept=".mp4" />
+      </div>
+      <br/>
       <div class="col-12 mt-4">
         <button type="submit" class="btn btn-primary">Submit</button>
       </div>
-      <center>
-        <h5>(Or)</h5>
-      </center>
-</form>
 
-    <form action="/submit-ques" enctype="multipart/form-data" method="post">
-      <div class="row g-3">
-        <div class="col-12">
-          <label for="question" class="form-label">Question:</label>
-          <input type="text" class="form-control" name="question" id="question" required />
-        </div>
-
-        <div class="col-12">
-          <label for="opt1" class="form-label">option:1</label>
-          <input type="text" class="form-control" name="option1" id="opt1" required />
-        </div>
-
-        <div class="col-12">
-          <label for="opt2" class="form-label">option:2</label>
-          <input type="text" class="form-control" name="option2" id="opt2" required />
-        </div>
-
-        <div class="col-12">
-          <label for="opt3" class="form-label">option:3</label>
-          <input type="text" class="form-control" name="option3" id="opt3" required />
-        </div>
-
-        <div class="col-12">
-          <label for="opt4" class="form-label">option:4</label>
-          <input type="text" class="form-control" name="option4" id="opt4" required />
-        </div>
-
-
-        <div class="col-12">
-          <label for="answer" class="form-label">Answer :</label>
-          <input type="text" class="form-control" name="answer" id="answer" required />
-        </div>
-
-        <div class="col-12">
-          <label for="title" class="form-label">Title:</label>
-          <input type="text" class="form-control" name="title" id="title" required />
-        </div>
-
-
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-
-      </div>
     </form>
   </div>
 </div>

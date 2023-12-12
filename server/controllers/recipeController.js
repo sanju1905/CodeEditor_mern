@@ -1,7 +1,7 @@
+const Ques = require("../models/Quiz");
+const fs = require('fs').promises;
+const path = require('path');
 require("../models/database");
-const Quiz = require("../models/Quiz");
-const xlsx = require('xlsx');
-
 /**
  * Get /
  * HomePage
@@ -9,11 +9,28 @@ const xlsx = require('xlsx');
 
 exports.homepage = async (req, res) => {
   try {
-    res.render("index", { title: "Quiz-app" });
+    const quest = await Ques.find();
+
+    const questsWithCodeContent = await Promise.all(
+      quest.map(async (question) => {
+        try {
+          const codeFilePath = path.join(__dirname, '..', question.code);
+          const codeContent = await fs.readFile(codeFilePath, 'utf-8');
+          return { ...question.toObject(), codeContent };
+        } catch (error) {
+          console.error(`Error reading code file ${question.code}:`, error);
+          return { ...question.toObject(), codeContent: 'Error loading code' };
+        }
+      })
+    );
+
+    res.render("index", { title: "Quiz-app", ques: questsWithCodeContent });
   } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Ocurred");
+    console.error("Error fetching questions:");
+    res.status(500).send("Error Occurred");
   }
 };
+
 
 /**
  *Quiz
@@ -26,16 +43,7 @@ exports.quiz = async (req, res) => {
   }
 };
 
-/**
- *About
- */
-exports.about = async (req, res) => {
-  try {
-    res.render("about", { title: "About us" });
-  } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Ocurred");
-  }
-};
+
 
 /**
  *Quest
@@ -62,158 +70,47 @@ exports.submitForm = async (req, res) => {
 /**
  *Submit Question post
  */
-
  exports.submitQuestion = async (req, res) => {
   try {
-    const { question, option1, option2, option3, option4, answer, title } = req.body;
+    const { name, question } = req.body;
 
-    // Check if a file was uploaded
-    if (req.files && req.files.file) {
-      const file = req.files.file;
+    if (req.files) {
+      const codeFile = req.files.code;
+      const videoFile = req.files.video;
 
-      // Read the file data
-      const workbook = xlsx.read(file.data, { type: 'buffer' });
+      const codeFileName = `${Date.now()}_code${getFileExtension(codeFile.name)}`;
+      const videoFileName = `${Date.now()}_video.mp4`;
 
-      // Assuming there is only one sheet in the Excel file
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const codePath = `./code/${codeFileName}`;
+      codeFile.mv(codePath);
 
-      // Extract data from the sheet
-      const excelData = xlsx.utils.sheet_to_json(sheet);
+      const videoPath = `./video/${videoFileName}`;
+      videoFile.mv(videoPath);
 
-      // Insert each row from the Excel file into the database
-      for (const row of excelData) {
-        const newQuestion = new Quiz({
-          question: row.question,
-          option1: row.option1,
-          option2: row.option2,
-          option3: row.option3,
-          option4: row.option4,
-          answer: row.answer,
-          title: row.title,
-        });
-
-        await newQuestion.save();
-      }
-
-      res.redirect("/submit-ques");
-    } else {
-      // Handle form data without file upload
-      const newQuestion = new Quiz({
+      const newQuestion = new Ques({
+        name,
         question,
-        option1,
-        option2,
-        option3,
-        option4,
-        answer,
-        title,
+        video: videoPath,
+        code: codePath
       });
 
       await newQuestion.save();
-      res.redirect("/submit-ques");
-    }
-  } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Occurred");
-  }
-};
-/**
- * Get Quiz Questions
- */
-exports.getQuizQuestions = async (req, res) => {
-  try {
-    // Get the difficulty level selected by the user
-    const difficulty = req.query.difficulty;
 
-    // Set the number of questions based on difficulty
-    let numberOfQuestions;
-    if (difficulty === "easy") {
-      numberOfQuestions = 1;
-    } else if (difficulty === "medium") {
-      numberOfQuestions = 2;
-    } else if (difficulty === "hard") {
-      numberOfQuestions = 3;
+      res.redirect('/submit-ques');
     } else {
-      // Default to easy if difficulty is not recognized
-      numberOfQuestions = 1;
+      res.status(400).send('No files were uploaded.');
     }
-
-    // Use Mongoose to fetch a random subset of quiz questions from the database
-    const quizQuestions = await Quiz.aggregate([
-      { $sample: { size: numberOfQuestions } },
-    ]);
-
-    // Render the 'quiz-questions' view and pass the quiz questions and difficulty as data
-    res.render("quiz-questions", {
-      title: "Quiz Questions",
-      quizQuestions,
-      difficulty,
-    });
   } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Occurred");
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 };
 
-/**
- *Submit Answers
- */
-exports.submitAnswers = async (req, res) => {
-  try {
-    const submittedAnswers = req.body;
-    const quizQuestions = await Quiz.find();
+function getFileExtension(filename) {
+  const dotIndex = filename.lastIndexOf('.');
+  return dotIndex === -1 ? '' : filename.slice(dotIndex + 1);
+}
 
-    let points = 0;
-    let total = 0;
 
-    quizQuestions.forEach((question) => {
-      const submittedAnswer = submittedAnswers[`answer${question._id}`];
 
-      if (question.answer && submittedAnswer !== undefined) {
-        const correctAnswer = question.answer.trim().toLowerCase();
-        const submittedAnswerTrimmed = submittedAnswer.trim().toLowerCase();
 
-        console.log(
-          `Question ${question._id} - Correct: ${correctAnswer}, Submitted: ${submittedAnswerTrimmed}`
-        );
-
-        if (correctAnswer === submittedAnswerTrimmed) {
-          points++;
-        }
-        total++;
-      }
-    });
-
-    console.log(`Total Points: ${points}, Total Questions: ${total}`);
-
-    res.render("score", { title: "Quiz Result", points, total });
-  } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Occurred");
-  }
-};
-/**
- *Login Form
- */
- exports.login = async (req, res) => {
-  try {
-    res.render("login", { title: "Admin-Form" });
-  } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Ocurred");
-  }
-};
-/**
- *Login submit
- */
- exports.loginSubmit = async (req, res) => {
-  try {
-    name=req.body.name;
-    password=req.body.password;
-    if (name === "Sanjay" && password === "1905") {
-      res.render("submit-ques", { title: "Ques_upload" });
-    }
-    else{
-      
-      res.render("login", { title: "Admin-Form" });
-    }
-    
-  } catch (error) {
-    res.status(500).send({ message: error.message } || "Error Ocurred");
-  }
-};
